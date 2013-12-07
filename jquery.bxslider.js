@@ -76,6 +76,7 @@
 		slideWidth: 0,
 
 		// CALLBACKS
+        onSliderReady: function() {},
 		onSliderLoad: function() {},
 		onSlideBefore: function() {},
 		onSlideAfter: function() {},
@@ -264,6 +265,8 @@
 			}else{
 				slider.settings.pager = false;
 			}
+            slider.settings.onSliderReady();
+
 			// preload all images, then perform final DOM / CSS modifications that depend on images being loaded
 			loadElements(preloadSelector, start);
 		};
