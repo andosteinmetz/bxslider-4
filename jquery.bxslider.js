@@ -121,7 +121,7 @@
 			// merge user-supplied options with the defaults
 			slider.settings = $.extend({}, defaults, options);
 			// parse slideWidth setting
-			slider.settings.slideWidth = parseInt(slider.settings.slideWidth);
+			slider.settings.slideWidth = parseInt(slider.settings.slideWidth, 10);
 			// store the original children
 			slider.children = el.children(slider.settings.slideSelector);
 			// check if actual number of slides is less than minSlides / maxSlides
@@ -749,7 +749,7 @@
 			// if auto show is running, stop it
 			if (slider.settings.auto) el.stopAuto();
 			var pagerLink = $(e.currentTarget);
-			var pagerIndex = parseInt(pagerLink.attr('data-slide-index'));
+			var pagerIndex = parseInt(pagerLink.attr('data-slide-index'), 10);
 			// if clicked pager link is not active, continue with the goToSlide call
 			if(pagerIndex != slider.active.index) el.goToSlide(pagerIndex);
 			e.preventDefault();
@@ -914,7 +914,7 @@
 					// determine which property to use
 					var property = slider.settings.mode == 'horizontal' ? 'left' : 'top';
 					// calculate the new speed
-					var newSpeed = ratio * (totalDimens - (Math.abs(parseInt(el.css(property)))));
+					var newSpeed = ratio * (totalDimens - (Math.abs(parseInt(el.css(property), 10))));
 					tickerLoop(newSpeed);
 				});
 			}
@@ -1191,7 +1191,7 @@
 		el.goToNextSlide = function(){
 			// if infiniteLoop is false and last page is showing, disregard call
 			if (!slider.settings.infiniteLoop && slider.active.last) return;
-			var pagerIndex = parseInt(slider.active.index) + 1;
+			var pagerIndex = parseInt(slider.active.index, 10) + 1;
 			el.goToSlide(pagerIndex, 'next');
 		}
 
@@ -1201,7 +1201,7 @@
 		el.goToPrevSlide = function(){
 			// if infiniteLoop is false and last page is showing, disregard call
 			if (!slider.settings.infiniteLoop && slider.active.index == 0) return;
-			var pagerIndex = parseInt(slider.active.index) - 1;
+			var pagerIndex = parseInt(slider.active.index, 10) - 1;
 			el.goToSlide(pagerIndex, 'prev');
 		}
 
