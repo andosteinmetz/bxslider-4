@@ -306,7 +306,7 @@
 			// slider has been fully initialized
 			slider.initialized = true;
 			// bind the resize call to the window
-			if (slider.settings.responsive) $(window).bind('resize', resizeWindow);
+			if (slider.settings.responsive) $(window).on('resize', resizeWindow);
 			// if auto is true, start the show
 			if (slider.settings.auto && slider.settings.autoStart) initAuto();
 			// if ticker is true, start the ticker
@@ -530,9 +530,9 @@
 					// set the property value
 					el.css(slider.animProp, propValue);
 					// bind a callback method - executes when CSS transition completes
-					el.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
+					el.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
 						// unbind the callback
-						el.unbind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
+						el.off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
 						updateAfterSlideTransition();
 					});
 				}else if(type == 'reset'){
@@ -542,9 +542,9 @@
 					el.css('-' + slider.cssPrefix + '-transition-timing-function', 'linear');
 					el.css(slider.animProp, propValue);
 					// bind a callback method - executes when CSS transition completes
-					el.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
+					el.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(){
 						// unbind the callback
-						el.unbind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
+						el.off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd');
 						// reset the position
 						setPositionProperty(params['resetValue'], 'reset', 0);
 						// start the loop again
@@ -626,8 +626,8 @@
 			slider.controls.next = $('<a class="bx-next" href="">' + slider.settings.nextText + '</a>');
 			slider.controls.prev = $('<a class="bx-prev" href="">' + slider.settings.prevText + '</a>');
 			// bind click actions to the controls
-			slider.controls.next.bind('click', clickNextBind);
-			slider.controls.prev.bind('click', clickPrevBind);
+			slider.controls.next.on('click', clickNextBind);
+			slider.controls.prev.on('click', clickPrevBind);
 			// if nextSlector was supplied, populate it
 			if(slider.settings.nextSelector){
 				$(slider.settings.nextSelector).append(slider.controls.next);
@@ -951,7 +951,7 @@
 				start: {x: 0, y: 0},
 				end: {x: 0, y: 0}
 			}
-			slider.viewport.bind('touchstart', onTouchStart);
+			slider.viewport.on('touchstart', onTouchStart);
 		}
 
 		/**
@@ -971,9 +971,9 @@
 				slider.touch.start.x = orig.changedTouches[0].pageX;
 				slider.touch.start.y = orig.changedTouches[0].pageY;
 				// bind a "touchmove" event to the viewport
-				slider.viewport.bind('touchmove', onTouchMove);
+				slider.viewport.on('touchmove', onTouchMove);
 				// bind a "touchend" event to the viewport
-				slider.viewport.bind('touchend', onTouchEnd);
+				slider.viewport.on('touchend', onTouchEnd);
 			}
 		}
 
@@ -1017,7 +1017,7 @@
 		 *  - DOM event object
 		 */
 		var onTouchEnd = function(e){
-			slider.viewport.unbind('touchmove', onTouchMove);
+			slider.viewport.off('touchmove', onTouchMove);
 			var orig = e.originalEvent;
 			var value = 0;
 			// record end x, y positions
@@ -1055,7 +1055,7 @@
 					}
 				}
 			}
-			slider.viewport.unbind('touchend', onTouchEnd);
+			slider.viewport.off('touchend', onTouchEnd);
 		}
 
 		/**
@@ -1294,7 +1294,7 @@
 			$('.bx-caption', this).remove();
 			if(slider.controls.autoEl) slider.controls.autoEl.remove();
 			clearInterval(slider.interval);
-			if(slider.settings.responsive) $(window).unbind('resize', resizeWindow);
+			if(slider.settings.responsive) $(window).off('resize', resizeWindow);
 		}
 
 		/**
