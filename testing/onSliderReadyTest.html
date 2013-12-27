@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>onSliderReadyTest</title>
+</head>
+<body>
+    <div id="onSliderReadyTest">
+        <img src="images/1.jpeg">
+        <img src="images/2.jpeg">
+        <img src="images/3.jpeg">
+        <img src="images/4.jpeg">
+        <img src="images/5.jpeg">
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="../jquery.bxslider.js"></script>
+    <script>
+        $('#onSliderReadyTest').bxSlider({
+            onSliderReady: function(){
+                console.log('sliderReadyTriggered');
+                console.log(this);
+            }
+        });
+    </script>
+</body>
+</html>
