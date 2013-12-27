@@ -74,6 +74,7 @@
 		maxSlides: 1,
 		moveSlides: 0,
 		slideWidth: 0,
+		slidePadding: 0,
 
 		// CALLBACKS
         onSliderReady: function() {},
@@ -123,6 +124,7 @@
 			slider.settings = $.extend({}, defaults, options);
 			// parse slideWidth setting
 			slider.settings.slideWidth = parseInt(slider.settings.slideWidth, 10);
+			slider.settings.slidePadding = parseInt(slider.settings.slidePadding, 10);
 			// store the original children
 			slider.children = el.children(slider.settings.slideSelector);
 			// check if actual number of slides is less than minSlides / maxSlides
@@ -402,8 +404,13 @@
 			if(slider.settings.slideWidth == 0 ||
 				(slider.settings.slideWidth > wrapWidth && !slider.carousel) ||
 				slider.settings.mode == 'vertical'){
-				newElWidth = wrapWidth;
-			// if carousel, use the thresholds to determine the width
+
+				if (slider.settings.mode == 'horizontal' && slider.settings.slidePadding > 0) {
+					newElWidth = wrapWidth - slider.settings.slidePadding * 2;
+				} else {
+			        // if carousel, use the thresholds to determine the width
+				    newElWidth = wrapWidth;
+				}
 			}else if(slider.settings.maxSlides > 1 && slider.settings.mode == 'horizontal'){
 				if(wrapWidth > slider.maxThreshold){
 					// newElWidth = (wrapWidth - (slider.settings.slideMargin * (slider.settings.maxSlides - 1))) / slider.settings.maxSlides;
@@ -510,7 +517,7 @@
             if (slider.active.index == getPagerQty() - 1) slider.active.last = true;
             // set the repective position
             if (position != undefined){
-                if (slider.settings.mode == 'horizontal') setPositionProperty(-position.left, 'reset', 0);
+				if (slider.settings.mode == 'horizontal') setPositionProperty(-position.left + (slider.settings.slidePadding), 'reset', 0);
                 else if (slider.settings.mode == 'vertical') setPositionProperty(-position.top, 'reset', 0);
             }
 		};
@@ -803,10 +810,9 @@
 				}else if(slider.active.index == slider.children.length - 1){
 					position = slider.children.eq(slider.children.length - 1).position();
 				}
-
 				if (slider.settings.mode == 'horizontal') {
-                    setPositionProperty(-position.left, 'reset', 0);
-                } else if (slider.settings.mode == 'vertical') {
+                    setPositionProperty(-position.left+slider.settings.slidePadding, 'reset', 0);
+                }else if (slider.settings.mode == 'vertical') {
                     setPositionProperty(-position.top, 'reset', 0);
                 }
 			}
@@ -1197,7 +1203,7 @@
              * it doesn't throw an error.
              */
             if ("undefined" !== typeof(position)) {
-                var value = slider.settings.mode == 'horizontal' ? -(position.left - moveBy) : -position.top;
+				var value = slider.settings.mode == 'horizontal' ? -(position.left - slider.settings.slidePadding - moveBy) : -position.top;
                 // plugin values to be animated
                 setPositionProperty(value, 'slide', slider.settings.speed);
             }
