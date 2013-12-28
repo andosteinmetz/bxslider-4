@@ -251,8 +251,7 @@
 			// if video is true, set up the fitVids plugin
 			if(slider.settings.video) el.fitVids();
 			// set the default preload selector (visible)
-			var preloadSelector = slider.children.eq(slider.settings.startSlide);
-			if (slider.settings.preloadImages === "all") preloadSelector = slider.children;
+			var preloadSelector = (slider.settings.preloadImages === "all") ? slider.children : slider.children.eq(slider.settings.startSlide);
 			// only check for control addition if not in "ticker" mode
 			if (!slider.settings.ticker){
 				// if pager is requested, add it
@@ -951,15 +950,10 @@
 				start: {x: 0, y: 0},
 				end: {x: 0, y: 0}
 			};
-			slider.viewport.on('touchstart', onTouchStart);
+
+			slider.viewport.on((window.navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart'), onTouchStart);
 		};
 
-		/**
-		 * Event handler for "touchstart"
-		 *
-		 * @param e (event)
-		 *  - DOM event object
-		 */
 		var onTouchStart = function(e){
 			if(slider.working){
 				e.preventDefault();
@@ -972,30 +966,22 @@
             // record the starting touch x, y coordinates
             slider.touch.start.x = orig.changedTouches[0].pageX;
             slider.touch.start.y = orig.changedTouches[0].pageY;
-            // bind a "touchmove" event to the viewport
-            slider.viewport.on('touchmove', onTouchMove);
-            // bind a "touchend" event to the viewport
-            slider.viewport.one('touchend', onTouchEnd);
+
+            slider.viewport.on((window.navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove'), onTouchMove);
+            slider.viewport.one((window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend'), onTouchEnd);
 		};
 
-		/**
-		 * Event handler for "touchmove"
-		 *
-		 * @param e (event)
-		 *  - DOM event object
-		 */
 		var onTouchMove = function(e){
 			var orig = e.originalEvent;
-			// if scrolling on y axis, do not prevent default
 			var xMovement = Math.abs(orig.changedTouches[0].pageX - slider.touch.start.x);
 			var yMovement = Math.abs(orig.changedTouches[0].pageY - slider.touch.start.y);
-			// x axis swipe
-			if((xMovement * 3) > yMovement && slider.settings.preventDefaultSwipeX){
+
+            if((xMovement * 3) > yMovement && slider.settings.preventDefaultSwipeX){
 				e.preventDefault();
-			// y axis swipe
 			}else if((yMovement * 3) > xMovement && slider.settings.preventDefaultSwipeY){
 				e.preventDefault();
 			}
+
 			if(slider.settings.mode !== 'fade' && slider.settings.oneToOneTouch){
 				var value = 0,
                     change;
@@ -1019,7 +1005,7 @@
 		 *  - DOM event object
 		 */
 		var onTouchEnd = function(e){
-			slider.viewport.off('touchmove', onTouchMove);
+			slider.viewport.off((window.navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend'), onTouchMove);
 
 			var orig = e.originalEvent,
 			    value = 0,
@@ -1047,6 +1033,7 @@
                 distance = slider.touch.end.y - slider.touch.start.y;
                 value = slider.touch.originalPos.top;
             }
+
             // if not infinite loop and first / last slide, do not attempt a slide transition
             if(!slider.settings.infiniteLoop && ((slider.active.index == 0 && distance > 0) || (slider.active.last && distance < 0))){
                 setPositionProperty(value, 'reset', 200);
@@ -1082,6 +1069,8 @@
 				el.redrawSlider();
 			}
 		};
+
+
 
 		/**
 		 * ===================================================================================
@@ -1168,7 +1157,8 @@
                 // horizontal carousel, going previous while on first slide (infiniteLoop mode)
             }else if(slider.carousel && slider.active.last && direction == 'prev'){
                 // get the last child position
-                var eq = slider.settings.moveSlides == 1 ? slider.settings.maxSlides - getMoveBy() : ((getPagerQty() - 1) * getMoveBy()) - (slider.children.length - slider.settings.maxSlides);
+                var eq = (slider.settings.moveSlides == 1) ? (slider.settings.maxSlides - getMoveBy()) :
+                    (((getPagerQty() - 1) * getMoveBy()) - (slider.children.length - slider.settings.maxSlides));
                 lastChild = el.children('.bx-clone').eq(eq);
                 position = lastChild.position();
             // if infinite loop and "Next" is clicked on the last slide
