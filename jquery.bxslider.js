@@ -254,7 +254,7 @@
 			var preloadSelector = slider.children.eq(slider.settings.startSlide);
 			if (slider.settings.preloadImages === "all") preloadSelector = slider.children;
 			// only check for control addition if not in "ticker" mode
-			if(!slider.settings.ticker){
+			if (!slider.settings.ticker){
 				// if pager is requested, add it
 				if(slider.settings.pager) appendPager();
 				// if controls are requested, add them
@@ -264,29 +264,13 @@
 				// if any control option is requested, add the controls wrapper
 				if(slider.settings.controls || slider.settings.autoControls || slider.settings.pager) slider.viewport.after(slider.controls.el);
 			// if ticker mode, do not allow a pager
-			}else{
+			} else {
 				slider.settings.pager = false;
 			}
+
             slider.settings.onSliderReady();
 
-			// preload all images, then perform final DOM / CSS modifications that depend on images being loaded
-			loadElements(preloadSelector, start);
-		};
-
-		var loadElements = function(selector, callback){
-			var total = selector.find('img, iframe').length;
-			if (total == 0){
-				callback();
-				return;
-			}
-			var count = 0;
-			selector.find('img, iframe').each(function(){
-				$(this).one('load', function() {
-				  if(++count == total) callback();
-				}).each(function() {
-				  if(this.complete) $(this).load();
-				});
-			});
+            start();
 		};
 
 		/**
